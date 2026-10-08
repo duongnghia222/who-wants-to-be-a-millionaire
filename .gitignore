@@ -1,0 +1,8 @@
+# Dependencies
+node_modules/
+
+# OS files
+.DS_Store
+
+# The source book is not redistributed with this project
+*.pdf

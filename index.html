@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#6243db">
+    <meta name="description" content="Học hiểu sâu qua câu hỏi vận dụng về khoa học, toán học, công nghệ và kinh tế, có giải thích và nguồn đọc thêm.">
+    <title>Triệu phú · Học để hiểu</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Crect width='40' height='40' rx='12' fill='%236243db'/%3E%3Cpath d='M20 7 33 20 20 33 7 20Z' fill='none' stroke='white' stroke-width='3'/%3E%3C/svg%3E">
+    <link rel="stylesheet" href="styles.css">
+    <script defer src="data/questions.js"></script>
+    <script defer src="study-core.js"></script>
+    <script defer src="app.js"></script>
+  </head>
+  <body>
+    <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <symbol id="i-book" viewBox="0 0 24 24"><path d="M12 5v15m0-15C9 3 5 3 3 4v15c3-1 6-1 9 1 3-2 6-2 9-1V4c-2-1-6-1-9 1Z"/></symbol>
+      <symbol id="i-shuffle" viewBox="0 0 24 24"><path d="m17 3 4 4-4 4m0 2 4 4-4 4M3 7h3c5 0 7 10 12 10h3M3 17h3c2 0 4-3 6-6s4-4 6-4h3"/></symbol>
+      <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/></symbol>
+      <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 3h7v7m0-7L10 14m0-11H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5"/></symbol>
+      <symbol id="i-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+      <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></symbol>
+      <symbol id="i-repeat" viewBox="0 0 24 24"><path d="m17 2 4 4-4 4M3 11V8a2 2 0 0 1 2-2h16M7 22l-4-4 4-4m14-1v3a2 2 0 0 1-2 2H3"/></symbol>
+      <symbol id="i-arrow" viewBox="0 0 24 24"><path d="M4 12h16m-6-6 6 6-6 6"/></symbol>
+      <symbol id="i-spark" viewBox="0 0 24 24"><path d="m12 3 2.4 6.6L21 12l-6.6 2.4L12 21l-2.4-6.6L3 12l6.6-2.4L12 3Z"/></symbol>
+      <symbol id="i-close" viewBox="0 0 24 24"><path d="m6 6 12 12M18 6 6 18"/></symbol>
+    </svg>
+
+    <header class="site-header">
+      <div class="header-inner">
+        <a class="brand" href="./index.html" aria-label="Triệu phú - Học để hiểu"><span class="brand-mark" aria-hidden="true">◇</span><span>triệu phú<span class="brand-caption">HỌC ĐỂ HIỂU</span></span></a>
+        <span class="header-motto">Mỗi câu hỏi mở ra một điều mới.</span>
+      </div>
+    </header>
+
+    <main class="workspace" id="workspace" hidden>
+      <aside class="sidebar" aria-label="Điều hướng học tập">
+        <div class="library-heading"><span class="eyebrow">KHÔNG GIAN HỌC TẬP</span><span class="year-tag">HIỂU SÂU</span></div>
+        <h1>Ai là triệu phú</h1>
+        <p class="edition">Câu hỏi đã chọn lọc · Đi từng câu, hiểu từng ý.</p>
+        <nav class="scope-nav" aria-label="Chọn lượt học">
+          <button type="button" class="scope-button" data-scope="learning" aria-pressed="false"><svg class="icon"><use href="#i-spark"/></svg>Học hiểu sâu<span id="learning-count">0</span></button>
+          <button type="button" class="scope-button active" data-scope="all" aria-pressed="true"><svg class="icon"><use href="#i-book"/></svg>Học toàn bộ<span id="all-count">0</span></button>
+          <button type="button" class="scope-button" data-scope="review" aria-pressed="false"><svg class="icon"><use href="#i-repeat"/></svg>Cần ôn lại<span id="review-count">0</span></button>
+          <button type="button" class="scope-button" data-scope="unseen" aria-pressed="false"><svg class="icon"><use href="#i-spark"/></svg>Chưa học<span id="unseen-count">0</span></button>
+        </nav>
+        <section class="progress-section" aria-label="Tiến độ học">
+          <div class="progress-label"><span>Đã hiểu</span><strong id="mastery-count">0 / 0</strong></div>
+          <progress id="progress-bar" value="0" max="1" aria-label="Số câu bạn đánh dấu đã hiểu"></progress>
+          <p class="progress-detail"><span id="progress-count">0</span> câu đã xem <span aria-hidden="true">·</span> <span id="progress-percent">0%</span> đã hiểu</p>
+          <p class="progress-hint">Trả lời đúng là bước đầu. Hiểu vì sao mới là điều cần nhớ.</p>
+        </section>
+        <button class="library-button" id="library-button" type="button"><svg class="icon"><use href="#i-search"/></svg>Tìm trong thư viện<span aria-hidden="true">/</span></button>
+        <details class="browse-section">
+          <summary>Đi đến một câu hỏi</summary>
+          <label class="field-label" for="chapter-select">Nhóm câu hỏi</label>
+          <select id="chapter-select"></select>
+          <nav class="question-grid" id="question-grid" aria-label="Các câu hỏi trong nhóm"></nav>
+          <div class="grid-legend"><span><i class="legend-dot understood-dot"></i>Đã hiểu</span><span><i class="legend-dot review-dot"></i>Cần ôn</span></div>
+          <form class="jump-form" id="jump-form"><label class="field-label" for="jump-input">Đến câu số</label><div class="jump-controls"><input id="jump-input" type="number" inputmode="numeric" min="1" required placeholder="Số câu"><button type="submit" class="jump-button">Đi đến</button></div></form>
+        </details>
+        <p class="storage-note" id="storage-note"><span class="save-dot" aria-hidden="true"></span>Tiến độ & ghi chú tự lưu trên máy này.</p>
+      </aside>
+
+      <section class="study-area" aria-label="Học và ôn tập">
+        <div class="study-heading"><div><p class="eyebrow" id="scope-eyebrow">HỌC TOÀN BỘ</p><h2 id="study-title">Hiểu thêm một chút, mỗi ngày.</h2><p class="study-subtitle" id="scope-description">Học ý chính, hiểu lý do, rồi tự kiểm tra.</p></div><button class="icon-button" id="random-button" type="button" aria-label="Câu ngẫu nhiên trong lượt học" title="Câu ngẫu nhiên"><svg class="icon"><use href="#i-shuffle"/></svg></button></div>
+        <button class="return-button" id="return-button" type="button" hidden>← Về câu trước</button>
+        <div class="study-toolbar" id="study-toolbar"><div class="view-switch" role="group" aria-label="Cách học"><button type="button" id="learn-view" aria-pressed="true">Học nhanh</button><button type="button" id="test-view" aria-pressed="false">Tự kiểm tra</button></div><span class="toolbar-hint" id="view-hint">Đọc đáp án · Hiểu ý chính</span></div>
+        <div class="learning-layout" id="learning-layout">
+          <div class="question-column">
+            <article class="question-card" aria-labelledby="question-text">
+              <div class="question-meta"><div class="question-labels"><span class="question-number" id="question-number">CÂU 001</span><span class="status-badge" id="question-status">Chưa học</span></div><span id="page-label" class="page-label" title="Trang trong sách gốc" hidden></span></div>
+              <h3 id="question-text" tabindex="-1"></h3>
+              <p class="question-topic" id="question-topic" hidden></p>
+              <p class="answer-prompt" id="answer-prompt" hidden>Thử nhớ đáp án trước khi chọn một phương án.</p>
+              <details class="choices-disclosure" id="choices-disclosure"><summary>Xem 4 phương án</summary><div class="options" id="options" role="group" aria-label="Các phương án trả lời"></div></details>
+              <div class="answer-section" id="answer-section" hidden>
+                <div class="answer-insight"><span class="answer-icon" aria-hidden="true"><svg class="icon"><use href="#i-check"/></svg></span><div><p class="answer-label" id="answer-label">ĐÁP ÁN CẦN NHỚ</p><p id="answer-text"></p></div><span class="answer-letter" id="answer-letter"></span></div>
+                <p class="feedback" id="feedback" role="status" aria-live="polite" aria-atomic="true" hidden></p>
+                <div class="explanation" id="explanation"><p class="explanation-label">VÌ SAO LÀ ĐÁP ÁN NÀY?</p><p id="explanation-text"></p><span class="explanation-source" id="explanation-source">Giải thích từ sách gốc</span></div>
+                <div class="reference-links" id="reference-links" aria-label="Nguồn đọc thêm" hidden></div>
+                <div class="source-note" id="source-note" hidden></div>
+              </div>
+              <div class="card-actions"><a id="google-link" class="search-link" target="_blank" rel="noopener noreferrer"><svg class="icon small-icon"><use href="#i-search"/></svg>Tra cứu câu hỏi<svg class="icon small-icon"><use href="#i-external"/></svg></a><button class="button button-primary" id="reveal-button" type="button" hidden><svg class="icon"><use href="#i-eye"/></svg>Xem đáp án<kbd>Space</kbd></button><span class="source-caption" id="source-caption">Đáp án theo tài liệu gốc</span></div>
+            </article>
+            <section class="rating-section" id="rating-section" aria-label="Tự đánh giá mức độ hiểu" hidden><div class="rating-heading"><strong>Bạn đã nắm được ý này chưa?</strong><span>Đánh dấu và chuyển câu tiếp theo</span></div><div class="rating-actions"><button class="button button-review" id="mark-review" type="button"><svg class="icon"><use href="#i-repeat"/></svg>Cần ôn lại<kbd>1</kbd></button><button class="button button-understood" id="mark-understood" type="button"><svg class="icon"><use href="#i-check"/></svg>Đã hiểu<kbd>2</kbd></button></div></section>
+            <nav class="study-navigation" id="study-navigation" aria-label="Chuyển câu hỏi"><button class="button button-nav" id="previous-button" type="button"><span aria-hidden="true">←</span>Câu trước</button><span id="position-label"></span><button class="button button-nav" id="next-button" type="button"><span id="next-label">Câu tiếp</span><span aria-hidden="true">→</span></button></nav>
+            <p class="study-footer"><kbd>←</kbd> <kbd>→</kbd> chuyển câu <span>·</span> <kbd>A</kbd>–<kbd>D</kbd> trả lời <span>·</span> <kbd>/</kbd> thư viện</p>
+          </div>
+          <aside class="understanding-rail" id="understanding-rail" aria-label="Hiểu sâu và mở rộng" hidden>
+            <div class="rail-heading"><span class="rail-icon"><svg class="icon"><use href="#i-spark"/></svg></span><div><h3>Đi xa hơn đáp án</h3><p>Một câu hỏi, thêm một kết nối.</p></div></div>
+            <details class="notes-panel" id="notes-panel"><summary><span>Ghi lại cách hiểu của bạn<small id="note-summary">Biến thông tin thành kiến thức</small></span><span aria-hidden="true" class="summary-plus">+</span></summary><div class="notes-fields"><label for="insight-note">Vì sao đáp án này đúng?<span>Thử giải thích bằng lời của bạn.</span></label><textarea id="insight-note" rows="3" maxlength="3000" placeholder="Ý chính, lý do hoặc cách phân biệt với đáp án khác…"></textarea><label for="followup-note">Từ đây, bạn muốn biết thêm gì?</label><textarea id="followup-note" rows="2" maxlength="3000" placeholder="Một câu hỏi mới có thể được đặt ra là…"></textarea><p class="note-save" id="note-save" role="status">Ghi chú riêng, tự lưu trên máy này.</p></div></details>
+            <section class="related-section"><div class="related-heading"><h4>Nối sang câu hỏi khác</h4><span>Cùng từ khóa trong bộ câu hỏi</span></div><div id="related-questions" class="related-questions"></div><button type="button" class="explore-button" id="explore-button">Tìm thêm trong thư viện<svg class="icon small-icon"><use href="#i-arrow"/></svg></button></section>
+            <p class="reflection-prompt">Nếu đổi cách hỏi, bạn có nhận ra kiến thức này không?</p>
+          </aside>
+        </div>
+        <section class="empty-state" id="empty-state" hidden aria-live="polite"><span class="empty-icon"><svg class="icon"><use href="#i-check"/></svg></span><h3 id="empty-title" tabindex="-1"></h3><p id="empty-description"></p><div class="empty-actions"><button class="button button-primary" id="empty-primary" type="button">Tiếp tục học</button><button class="button button-nav" id="empty-secondary" type="button">Học toàn bộ</button></div></section>
+        <p class="source-credit">Câu hỏi mở rộng có giải thích và nguồn đọc thêm.<br>Các câu giữ lại từ sách Ai là triệu phú 2018 bảo toàn nội dung gốc.</p>
+      </section>
+    </main>
+
+    <dialog id="library-dialog" class="library-dialog" aria-labelledby="library-title"><div class="dialog-heading"><div><p class="eyebrow">KHÁM PHÁ & KẾT NỐI</p><h2 id="library-title">Thư viện câu hỏi</h2></div><button class="icon-button" id="close-library" type="button" aria-label="Đóng thư viện"><svg class="icon"><use href="#i-close"/></svg></button></div><label class="search-field" for="library-search"><svg class="icon"><use href="#i-search"/></svg><input id="library-search" type="search" placeholder="Từ khóa, tên riêng hoặc số câu…" autocomplete="off"><span class="sr-only">Tìm câu hỏi (có thể gõ không dấu)</span></label><div class="library-filters" role="group" aria-label="Lọc câu hỏi"><button type="button" data-filter="all" aria-pressed="true">Tất cả</button><button type="button" data-filter="unseen" aria-pressed="false">Chưa học</button><button type="button" data-filter="review" aria-pressed="false">Cần ôn</button><button type="button" data-filter="understood" aria-pressed="false">Đã hiểu</button><button type="button" data-filter="notes" aria-pressed="false">Có ghi chú</button></div><p class="library-count" id="library-count" role="status"></p><div id="library-results" class="library-results"></div><div class="library-pagination"><button class="button button-nav" id="library-previous" type="button">← Trước</button><span id="library-page"></span><button class="button button-nav" id="library-next" type="button">Sau →</button></div></dialog>
+    <div id="load-error" class="load-error" hidden>Không tải được bộ câu hỏi. Hãy giữ thư mục data cùng với file index.html rồi mở lại trang.</div>
+    <noscript><p class="load-error">Vui lòng bật JavaScript để sử dụng công cụ ôn tập.</p></noscript>
+  </body>
+</html>
