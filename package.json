@@ -2,7 +2,7 @@
   "name": "trieu-phu-study",
   "version": "1.0.0",
   "private": true,
-  "description": "Offline Vietnamese study app: reasoning-focused quiz questions with explanations, reading sources, self-testing and personal notes.",
+  "description": "Offline Vietnamese study app: Ai là triệu phú quiz-show questions with four choices, explanations, self-testing and personal notes.",
   "license": "MIT",
   "engines": {
     "node": ">=22"

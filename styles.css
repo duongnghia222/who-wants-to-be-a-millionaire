@@ -145,9 +145,6 @@ h2 { font-size: 1.65rem; font-weight: 700; letter-spacing: -.85px; margin: 0; li
 .explanation-label { font-size: .6875rem; letter-spacing: 1px; color: #756884; font-weight: 700; margin: 0 0 10px; }
 #explanation-text { margin: 0; font-size: .875rem; line-height: 1.85; color: #655d74; overflow-wrap: anywhere; }
 .explanation-source { display: block; color: #777080; font-size: .6875rem; margin-top: 11px; }
-.question-topic { color: var(--purple); font-size: .75rem; line-height: 1.6; margin: 12px 0 0; }
-.reference-links { display: grid; gap: 8px; margin-top: 12px; font-size: .75rem; line-height: 1.6; }
-.reference-links a { color: var(--purple); text-decoration: underline; text-underline-offset: 3px; overflow-wrap: anywhere; }
 .missing-explanation #explanation-text { color: #777080; font-size: .875rem; }
 .source-note { border-left: 2px solid #d2a34e; margin-top: 18px; padding: 3px 12px; color: #88652e; font-size: .75rem; line-height: 1.8; }
 .card-actions { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 13px; margin-top: 25px; padding-top: 18px; border-top: 1px solid #eeebf3; }

@@ -22,7 +22,7 @@
   try { saved = JSON.parse(localStorage.getItem(storageKey)); } catch { saved = null; }
   const progress = validProgress(saved, questions);
   if (!byId.has(saved?.currentId) && byId.has(data.defaultQuestionId)) progress.currentId = data.defaultQuestionId;
-  let scope = byId.get(progress.currentId).kind === 'learning' ? 'learning' : 'all';
+  let scope = 'all';
   let queue = studyQueue(questions, progress, scope);
   let revealed = false;
   let selected = null;
@@ -50,7 +50,6 @@
     const seen = questions.filter(question => learningStatus(question, progress) !== 'unseen').length;
     const understood = questions.filter(question => learningStatus(question, progress) === 'understood').length;
     el['all-count'].textContent = format.format(questions.length);
-    el['learning-count'].textContent = format.format(data.learningTotal);
     el['review-count'].textContent = format.format(studyQueue(questions, progress, 'review').length);
     el['unseen-count'].textContent = format.format(questions.length - seen);
     el['mastery-count'].textContent = `${format.format(understood)} / ${format.format(questions.length)}`;
@@ -157,23 +156,11 @@
     el['explanation-text'].textContent = question.explanation || 'Tài liệu gốc chưa có giải thích cho câu này. Hãy tra cứu lý do và thử giải thích lại bằng lời của bạn.';
     el.explanation.classList.toggle('missing-explanation', !question.explanation);
     el['explanation-source'].hidden = !question.explanation;
-    el['explanation-source'].textContent = question.kind === 'learning' ? 'Giải thích biên soạn · Đọc thêm từ nguồn bên dưới' : question.explanationSource === 'authored' ? 'Giải thích biên soạn bổ sung · Sách gốc không có giải thích' : 'Giải thích từ sách gốc';
-    const sources = document.createDocumentFragment();
-    for (const reference of question.references || []) {
-      const link = document.createElement('a');
-      link.href = reference.url;
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.textContent = reference.title;
-      sources.append(link);
-    }
-    el['reference-links'].replaceChildren(sources);
-    el['reference-links'].hidden = !question.references?.length;
+    el['explanation-source'].textContent = question.explanationSource === 'authored' ? 'Giải thích biên soạn bổ sung · Sách gốc không có giải thích' : 'Giải thích từ sách gốc';
     el['source-note'].textContent = question.sourceNote || '';
     el['source-note'].hidden = !question.sourceNote;
     el['reveal-button'].hidden = true;
     el['source-caption'].hidden = false;
-    el['source-caption'].textContent = question.kind === 'learning' ? 'Câu hỏi mở rộng · Học qua lý giải' : 'Đáp án theo tài liệu gốc';
     if (selected) {
       const correct = selected === question.answer;
       el.feedback.textContent = correct ? 'Bạn đã trả lời đúng. Hãy kiểm tra xem mình đã hiểu vì sao chưa.' : `Bạn chọn ${selected}. Đáp án là ${question.answer}. Câu này đã được thêm vào lượt ôn lại.`;
@@ -186,7 +173,6 @@
   function renderHeading() {
     const headings = {
       all: ['HỌC TOÀN BỘ', 'Hiểu thêm một chút, mỗi ngày.', 'Học ý chính, hiểu lý do, rồi tự kiểm tra.'],
-      learning: ['HỌC HIỂU SÂU', 'Học cách lý giải, không chỉ nhớ đáp án.', `${format.format(data.learningTotal)} câu hỏi mở rộng · 8 chủ đề · Có giải thích và nguồn đọc thêm.`],
       review: ['CẦN ÔN LẠI', 'Quay lại, để nhớ chắc hơn.', 'Những câu đã xem nhưng chưa đánh dấu đã hiểu.'],
       unseen: ['CHƯA HỌC', 'Mở thêm một cánh cửa kiến thức.', 'Tiếp tục với những câu bạn chưa xem đáp án.'],
     };
@@ -216,8 +202,6 @@
     el['random-button'].disabled = queue.length < 2;
     el['question-number'].textContent = `CÂU ${String(question.id).padStart(3, '0')}`;
     el['question-text'].textContent = question.question;
-    el['question-topic'].textContent = question.kind === 'learning' ? `${question.topic} · ${question.difficulty === 'hard' ? 'Khó' : 'Vận dụng'}` : '';
-    el['question-topic'].hidden = question.kind !== 'learning';
     el['page-label'].hidden = !question.printedPage;
     el['page-label'].textContent = question.printedPage ? `Trang ${question.printedPage}` : '';
     el['google-link'].href = googleSearchUrl(question);
@@ -396,7 +380,7 @@
     el['library-search'].focus();
   }
 
-  document.querySelector('.edition').textContent = `${format.format(questions.length)} câu đã chọn lọc · ${format.format(data.learningTotal)} câu mới có giải thích.`;
+  document.querySelector('.edition').textContent = `${format.format(questions.length)} câu đã chọn lọc từ sách Ai là triệu phú 2018.`;
   el['jump-input'].min = questions[0].id;
   el['jump-input'].max = questions.at(-1).id;
   el['jump-input'].placeholder = `${questions[0].id} – ${questions.at(-1).id}`;

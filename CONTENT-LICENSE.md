@@ -10,7 +10,7 @@ The application code, build script, tests and server are licensed under the [MIT
 
 The following files are original work by the trieu-phu-study contributors and are licensed under the [Creative Commons Attribution 4.0 International License](https://creativecommons.org/licenses/by/4.0/):
 
-- `data/learning-questions.json`: the 160 original questions, choices, explanations, topics and difficulty labels.
+- `data/learning-questions.json`: the 160 archived original questions, choices, explanations, topics and difficulty labels, excluded from the app.
 - `data/book-explanations.json`: explanations written for book questions that the book leaves unexplained.
 - `data/editorial-exclusions.json`: the editorial policy and exclusion groups.
 - `data/excluded-easy-question-ids.json`: the list of book question IDs removed as too easy.

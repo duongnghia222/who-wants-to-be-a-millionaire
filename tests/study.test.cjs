@@ -19,9 +19,10 @@ const learningQuestions = [
   { id: 4, answer: 'C' }, { id: 5, answer: 'D' },
 ];
 
-test('the bank combines retained book IDs with new questions without changing retained source rows', () => {
-  assert.equal(questions.length, 419);
+test('the active bank contains only retained quiz-show book questions with four choices and one answer', () => {
+  assert.equal(questions.length, 259);
   assert.equal(data.total, questions.length);
+  assert.equal(data.learningTotal, 0);
   assert.equal(excludedIds.length, 606);
   const excluded = new Set(excludedIds);
   assert.equal(excluded.size, excludedIds.length);
@@ -32,28 +33,26 @@ test('the bank combines retained book IDs with new questions without changing re
   const retained = bookQuestions.filter(question => !editorial.has(question.id));
   assert.equal(data.bookTotal, retained.length);
   const supplements = new Map(bookExplanations.map(item => [item.id, item.explanation]));
-  assert.deepEqual(questions.filter(question => question.kind !== 'learning'), retained.map(question => supplements.has(question.id) ? { ...question, explanation: supplements.get(question.id), explanationSource: 'authored' } : question));
-  assert.deepEqual(questions.filter(question => question.kind === 'learning'), authoredQuestions);
+  assert.deepEqual(questions, retained.map(question => supplements.has(question.id) ? { ...question, explanation: supplements.get(question.id), explanationSource: 'authored' } : question));
+  const authoredIds = new Set(authoredQuestions.map(question => question.id));
+  assert.ok(questions.every(question => !authoredIds.has(question.id) && question.kind !== 'learning'));
   questions.forEach((question, index) => {
     assert.ok(index === 0 || question.id > questions[index - 1].id);
     assert.deepEqual(Object.keys(question.options), ['A', 'B', 'C', 'D']);
     assert.ok(question.options[question.answer]);
     assert.ok(question.question.length > 5);
-    if (question.kind !== 'learning') {
-      assert.ok(Number.isInteger(question.printedPage) && question.printedPage >= 7 && question.printedPage <= 151);
-    }
+    assert.ok(Number.isInteger(question.printedPage) && question.printedPage >= 7 && question.printedPage <= 151);
     for (const text of [question.question, ...Object.values(question.options)]) {
       assert.doesNotMatch(text, /Đáp án:|CÂU \d+ ĐẾN|CHI TIẾT ĐÁP ÁN|\ufffd/);
     }
   });
   assert.equal(questions[0].id, 8);
   assert.equal(questions[0].answer, 'A');
-  assert.equal(data.defaultQuestionId, 1045);
+  assert.equal(data.defaultQuestionId, questions[0].id);
 });
 
-test('all 160 authored questions teach a concept with explanations, sources and distinct choices', () => {
+test('the 160 excluded authored questions remain intact in the source archive', () => {
   assert.equal(authoredQuestions.length, 160);
-  assert.equal(data.learningTotal, 160);
   assert.deepEqual(authoredQuestions.map(question => question.id), Array.from({ length: 160 }, (_, i) => 1045 + i));
   const topics = new Map();
   const answers = { A: 0, B: 0, C: 0, D: 0 };
@@ -130,7 +129,7 @@ test('invalid or old saved progress cannot break navigation or contaminate resul
 
 test('random navigation avoids repeating the current question, including the last question', () => {
   assert.equal(randomQuestionId(questions, 8, () => 0), 11);
-  assert.equal(randomQuestionId(questions, 1204, () => 0.999999), 1203);
+  assert.equal(randomQuestionId(questions, questions.at(-1).id, () => 0.999999), questions.at(-2).id);
   assert.equal(randomQuestionId([{ id: 1 }], 1), 1);
 });
 
@@ -145,22 +144,29 @@ test('set-aside ambiguities are archived with original notes but excluded from a
 
 const { learningStatus, studyQueue, searchQuestions, normalizeText, createRelatedFinder } = require('../study-core.js');
 
-test('the new learning queue contains only authored questions and retains saved new-question notes', () => {
+test('saved progress for excluded authored questions falls back to the book and preserves book progress', () => {
   const progress = validProgress({ currentId: 1204, view: 'test', results: {
     8: { mastery: 'understood' }, 1045: { mastery: 'review' }, 1204: { mastery: 'understood' },
-  }, notes: { 1204: { insight: 'GDP and welfare differ', followup: 'Which indicators complement it?' } } }, questions);
-  assert.equal(progress.currentId, 1204);
-  assert.equal(progress.notes[1204].insight, 'GDP and welfare differ');
-  assert.deepEqual(studyQueue(questions, progress, 'learning'), authoredQuestions.map(question => question.id));
+  }, notes: { 8: { insight: 'Book note', followup: '' }, 1204: { insight: 'GDP and welfare differ', followup: 'Which indicators complement it?' } } }, questions);
+  assert.equal(progress.currentId, questions[0].id);
+  assert.equal(progress.view, 'test');
+  assert.deepEqual(progress.results, { 8: { selected: null, mastery: 'understood' } });
+  assert.deepEqual(progress.notes, { 8: { insight: 'Book note', followup: '' } });
+  assert.deepEqual(studyQueue(questions, progress, 'learning'), []);
+  assert.deepEqual(studyQueue(questions, progress), questions.map(question => question.id));
   assert.deepEqual(validProgress(JSON.parse(JSON.stringify(progress)), questions), progress);
-  const snapshot = studyQueue(questions, progress, 'learning');
-  progress.results[1046] = { mastery: 'understood' };
-  assert.deepEqual(studyQueue(questions, progress, 'learning'), snapshot);
+});
+
+test('excluded authored questions do not appear in library search', () => {
+  const progress = validProgress(null, questions);
+  for (const question of authoredQuestions) {
+    assert.equal(searchQuestions(questions, progress, question.question).length, 0, `Excluded question ${question.id} appears in search`);
+  }
 });
 
 test('subject search works without accents and does not index hidden explanations or references', () => {
-  const progress = validProgress(null, questions);
-  assert.deepEqual(searchQuestions(questions, progress, 'xac suat va doc du lieu').map(question => question.id), authoredQuestions.filter(question => question.topic === 'Xác suất và đọc dữ liệu').map(question => question.id));
+  const progress = validProgress(null, authoredQuestions);
+  assert.deepEqual(searchQuestions(authoredQuestions, progress, 'xac suat va doc du lieu').map(question => question.id), authoredQuestions.filter(question => question.topic === 'Xác suất và đọc dữ liệu').map(question => question.id));
   assert.equal(searchQuestions(authoredQuestions, progress, 'OpenStax').length, 0);
   assert.equal(searchQuestions(authoredQuestions, progress, '585').length, 0); // Bayes denominator appears only in the explanation.
 });

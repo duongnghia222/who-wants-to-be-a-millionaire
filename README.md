@@ -1,11 +1,9 @@
 # Triệu phú · Học để hiểu
 
-An offline study app for Vietnamese learners, built on quiz-show-style multiple-choice questions. It goes beyond checking your answer: it explains *why* an answer is right, links to further reading, and tracks which questions you actually understand.
+An offline study app for Vietnamese learners, built on questions from *Ai là triệu phú*. Each question has four choices (A–D) and one correct answer, with an explanation and progress tracking.
 
-![Study view showing a question, its answer and explanation, a reading link, and related questions](docs/screenshot.png)
-
-- **419 questions:** 160 original reasoning questions across eight subjects, plus 259 curated questions from the book *Bộ câu hỏi Ai là triệu phú 2018*.
-- **Every question has an explanation**, and every original question links to a reputable reading source.
+- **259 quiz-show questions** selected from the book *Bộ câu hỏi Ai là triệu phú 2018*.
+- **Every question has four choices, one correct answer and an explanation.**
 - **Runs entirely in the browser.** No install, account, build step or tracking, and it works offline.
 
 The interface is in Vietnamese.
@@ -35,7 +33,6 @@ Once the answer is shown, rate yourself **Cần ôn lại** (review again) or **
 
 | Round | Contents |
 | --- | --- |
-| **Học hiểu sâu** | The 160 original questions |
 | **Học toàn bộ** | The whole bank |
 | **Chưa học** | Questions you haven't seen yet |
 | **Cần ôn lại** | Questions you've seen but haven't marked as understood |
@@ -46,7 +43,7 @@ The question list is fixed when a round starts, so rating a question never skips
 
 - **Personal notes** (**Ghi lại cách hiểu của bạn**): explain the answer in your own words and write down a follow-up question. Notes save as you type.
 - **Related questions** (**Nối sang câu hỏi khác**): up to three questions that share key words or phrases with the current one. These suggestions come from word overlap, not from verified links between concepts.
-- **Library** (**Tìm trong thư viện**): search question text, choices, topics and question numbers, with or without Vietnamese diacritics. Filter by unseen, review, understood, or questions with notes. Search results never reveal answers.
+- **Library** (**Tìm trong thư viện**): search question text, choices and question numbers, with or without Vietnamese diacritics. Filter by unseen, review, understood, or questions with notes. Search results never reveal answers.
 - **Google lookup** (**Tra cứu câu hỏi**): searches for the question text only, without the choices, answer or your notes.
 
 ### Keyboard shortcuts
@@ -63,19 +60,6 @@ These work whenever the cursor isn't in a text field.
 
 ## Question bank
 
-### Original questions (IDs 1045–1204)
-
-There are 160 questions, 20 in each of eight subjects: physics, chemistry and materials, biology and ecology, Earth and astronomy, probability and data, mathematics and reasoning, computing and technology, and economics and decision-making.
-
-Each question has:
-
-- four distinct choices;
-- a difficulty label, either **Vận dụng** (applied) or **Khó** (hard);
-- an explanation of the mechanism or calculation;
-- at least one reading link, from sources such as OpenStax, NASA, NOAA, USGS, MIT OpenCourseWare, Harvard CS50, MDN, the PostgreSQL docs and Google's Machine Learning Crash Course.
-
-The questions and their wording were written for this project. The links are for further reading and weren't the source of the questions. The set deliberately avoids year-specific news, awards, sports results, rankings that change and name-recognition trivia. Difficulty labels are an editorial judgment, not calibrated scores.
-
 ### Book questions
 
 The 259 book questions come from *Bộ câu hỏi Ai là triệu phú 2018* (VTV, second edition, 2020). They keep their original wording, answer keys, explanations and printed page numbers, which the app shows as **Trang N**. They have not been fact-checked or updated since publication.
@@ -88,9 +72,13 @@ Of the book's 1,044 questions:
 
 Original question numbers are kept, so the numbering has gaps.
 
+### Excluded learning questions
+
+The 160 authored reasoning questions (IDs 1045–1204) remain archived in `data/learning-questions.json`. They are excluded from the generated bank, study rounds, navigation and library search so the app uses the original quiz-show questions only.
+
 ## Privacy
 
-Your progress, notes and current position are saved in your browser's `localStorage` and never leave your device. The app has no analytics or accounts and loads no third-party assets. Only two things go online: the Google lookup, which sends the question text and nothing else, and the reading links you choose to open.
+Your progress, notes and current position are saved in your browser's `localStorage` and never leave your device. The app has no analytics or accounts and loads no third-party assets. The Google lookup goes online only when you open it, sending the question text and nothing else.
 
 Progress is stored separately for each browser and each address, so opening `index.html` directly and opening `localhost:4173` give you two separate sets of progress. Clearing your browser's site data erases it.
 
@@ -111,7 +99,7 @@ index.html, styles.css, app.js     Interface and interactions
 study-core.js                      Search, review queues, progress validation, related questions
 server.mjs                         Optional local static server
 data/
-  learning-questions.json          Source: the 160 original questions
+  learning-questions.json          Archive: 160 authored questions excluded from the app
   book-questions.json              Source: the 438 book questions left after the difficulty cut
   book-explanations.json           Source: explanations for book questions the book doesn't explain
   editorial-exclusions.json        Book questions set aside, grouped by reason
@@ -125,29 +113,11 @@ tests/study.test.cjs               Test suite
 
 ### Adding or editing questions
 
-1. Edit the source files in `data/`. A new original question goes in `learning-questions.json`:
+1. Keep the book's question wording, four A–D choices, answer key and printed page number in `book-questions.json`. Add explanations only for questions the book leaves unexplained, using `book-explanations.json`. Editing `learning-questions.json` does not change the active bank.
 
-   ```json
-   {
-     "id": 1205,
-     "kind": "learning",
-     "topic": "Vật lý và đời sống",
-     "difficulty": "medium",
-     "question": "…",
-     "options": { "A": "…", "B": "…", "C": "…", "D": "…" },
-     "explanation": "…",
-     "references": [{ "title": "…", "url": "https://…" }],
-     "answer": "B"
-   }
-   ```
+2. Run `npm run build:data`. The build fails on duplicate IDs or question text, an invalid answer key, duplicate choices, missing book pages, or invalid supplementary explanations.
 
-   - `id` must be unique and greater than 1044, because 1–1044 are the book's numbers.
-   - `difficulty` is `medium` (Vận dụng) or `hard` (Khó).
-   - `explanation` must be at least 120 characters, and every reference URL must use HTTPS.
-
-2. Run `npm run build:data`. The build fails on duplicate IDs or question text, an invalid answer key, duplicate choices, or a missing explanation or reference.
-
-3. Run `npm test`. The tests lock in properties of the current bank: question counts, 20 questions per subject, an even spread of correct answers across A–D, and an allowlist of reference domains. When you change the bank on purpose, update the tests to match.
+3. Run `npm test`. The tests check the book-only bank, four-choice format, exclusions, saved progress, navigation and search. Archive integrity checks also cover the excluded learning questions.
 
 To set aside a book question, add its ID to a group in `data/editorial-exclusions.json` and rebuild.
 
